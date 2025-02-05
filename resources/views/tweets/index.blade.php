@@ -21,8 +21,7 @@
             margin-top: 20px;
         }
 
-        p1 {
-            display: block; 
+        .description {
             font-size: 14px;
             color: #657786;
             text-align: center; 
@@ -41,29 +40,63 @@
         }
 
         .tweet {
-            border-bottom: 1px solid #e6ecf0;
-            padding: 15px 0;
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .tweet:hover {
+            background-color: #f7f9fa;
+        }
+
+        .tweet-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #e1e8ed;
+        }
+
+        .user-details {
             display: flex;
             flex-direction: column;
         }
 
-        .tweet:last-child {
-            border-bottom: none;
+        .user-name {
+            font-weight: bold;
+            color: #14171a;
         }
 
-        .tweet-header {
-            margin-bottom: 10px;
+        .user-handle {
+            font-size: 14px;
+            color: #657786;
         }
 
         .tweet-info {
-            font-size: 14px;
+            font-size: 12px;
             color: #657786;
         }
 
         .tweet-text {
             font-size: 16px;
             line-height: 1.5;
-            margin-top: 10px;
+            color: #14171a;
+            margin-top: 8px;
         }
 
         .error {
@@ -99,10 +132,9 @@
 <body>
     <h1>Recent tweets from the alen_developer X account</h1>
 
-    <p1>
-    This page is powered by a Laravel application hosted on the subdomain api.alenhuric.com under my Hostinger account.<br />
-    The app fetches recent tweets using the Twitter API and is integrated into my personal portfolio.<br />
-    </p1>
+    <p class="description">
+    This page showcases a Laravel application hosted under the subdomain api.alenhuric.com,<br />  which fetches posts using the X API and displays them with a Blade-powered frontend. 
+    </p>
 
     <div class="container">
         @if(isset($error))
@@ -111,8 +143,14 @@
             @foreach($tweets as $tweet)
                 <div class="tweet">
                     <div class="tweet-header">
-                        <p><strong>alen_developer</strong> @alen_developer</p>
-                        <p class="tweet-info">{{ $tweet['created_at'] }}</p>
+                        <div class="user-info">
+                            <img src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png" alt="Profile Image" class="profile-img">
+                            <div class="user-details">
+                                <span class="user-name">Alen Huric</span>
+                                <span class="user-handle">@alen_developer</span>
+                            </div>
+                        </div>
+                        <span class="tweet-info">{{ \Carbon\Carbon::parse($tweet['created_at'])->diffForHumans() }}</span>
                     </div>
 
                     <p class="tweet-text">{{ $tweet['text'] }}</p>
