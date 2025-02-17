@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Cache;
 
 class TwitterController extends Controller
 {
@@ -15,56 +16,59 @@ class TwitterController extends Controller
         $baseUrl = 'https://api.twitter.com/2';
 
         $username = 'alen_developer';
+        $cacheKey = "tweets:$username";
 
-        $client = new Client();
+        $tweets = Cache::get($cacheKey);
 
-        try {
-            $userResponse = $client->get("$baseUrl/users/by/username/$username", [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $bearerToken,
-                ],
-            ]);
+        if (!$tweets) {
+            $client = new Client();
 
-            $userData = json_decode($userResponse->getBody(), true);
-            $userId = $userData['data']['id'];
+            try {
+                $userResponse = $client->get("$baseUrl/users/by/username/$username", [
+                    'headers' => ['Authorization' => 'Bearer ' . $bearerToken,],
+                ]);
 
-            $tweetsResponse = $client->get("$baseUrl/users/$userId/tweets", [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $bearerToken,
-                ],
-                'query' => [
-                    'max_results' => 10,
-                    'tweet.fields' => 'created_at,text',
-                ],
-            ]);
+                $userData = json_decode($userResponse->getBody(), true);
+                $userId = $userData['data']['id'];
 
-            $tweets = json_decode($tweetsResponse->getBody(), true)['data'];
+                $tweetsResponse = $client->get("$baseUrl/users/$userId/tweets", [
+                    'headers' => ['Authorization' => 'Bearer ' . $bearerToken,],
+                    'query' => [
+                        'max_results' => 20,
+                        'tweet.fields' => 'created_at,text',
+                    ],
+                ]);
 
-            if ($request->wantsJson()) {
-                return response()->json($tweets);
-            }
+                $tweets = json_decode($tweetsResponse->getBody(), true)['data'] ?? [];
 
-            return view('tweets.index', compact('tweets'));
+                Cache::put($cacheKey, $tweets, now()->addMinutes(15));
 
-        } catch (RequestException $e) {
-            if ($e->getResponse() && $e->getResponse()->getStatusCode() == 429) {
-                $resetTime = $e->getResponse()->getHeader('x-rate-limit-reset')[0] ?? null;
+            } catch (RequestException $e) {
+                if ($e->getResponse() && $e->getResponse()->getStatusCode() == 429) {
+                    $resetTime = $e->getResponse()->getHeader('x-rate-limit-reset')[0] ?? null;
 
-                if ($resetTime) {
-                    $waitMinutes = ceil(($resetTime - time()) / 60);
-                    $errorMessage = "The X API has a request limit. Please try again in about $waitMinutes minutes.";
+                    if ($resetTime) {
+                        $waitMinutes = ceil(($resetTime - time()) / 60);
+                        $errorMessage = "The X API has a request limit. Please try again in about $waitMinutes minutes.";
+                    } else {
+                        $errorMessage = "The X API has a request limit. Please try again later.";
+                    }
                 } else {
-                    $errorMessage = "The X API has a request limit. Please try again later.";
+                    $errorMessage = "An error occurred while fetching tweets. Please try again later.";
                 }
-            } else {
-                $errorMessage = "An error occurred while fetching tweets. Please try again later.";
-            }
 
-            if ($request->wantsJson()) {
-                return response()->json(['error' => $errorMessage], 500);
-            }
+                if ($request->wantsJson()) {
+                    return response()->json(['error' => $errorMessage], 500);
+                }
 
-            return view('tweets.index', ['error' => $errorMessage]);
+                return view('tweets.index', ['error' => $errorMessage]);
+            }
         }
+
+        if ($request->wantsJson()) {
+            return response()->json($tweets);
+        }
+
+        return view('tweets.index', compact('tweets'));
     }
 }
