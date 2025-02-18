@@ -161,6 +161,37 @@
         .vue-btn:hover svg {
             transform: scale(1.1);
         }
+
+        .vue-btn-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .tooltip {
+            background-color: #333;
+            color: #fff;
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            white-space: nowrap;
+            position: absolute;
+            bottom: 60px;
+            left: 90%;
+            transform: translateX(-90%);
+        }
+
+        .vue-btn-container:hover .tooltip {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -207,11 +238,14 @@
         </p>
     </div>
 
-    <a href="https://x-api-vue.alenhuric.com" class="vue-btn" target="_blank">
-        <svg viewBox="0 0 261.76 226.69" xmlns="http://www.w3.org/2000/svg">
-            <path d="M161.096.001l-30.224 52.35L100.647.002H.003l130.877 226.687L261.76.001z" fill="#41b883"/>
-            <path d="M161.096.001l-30.224 52.35L100.647.002H52.346l78.526 136.01L209.398.001z" fill="#34495e"/>
-        </svg>
-    </a>
+    <div class="vue-btn-container">
+        <div class="tooltip">Go to the Vue.js app</div>
+        <a href="https://x-api-vue.alenhuric.com" class="vue-btn" target="_blank">
+            <svg viewBox="0 0 261.76 226.69" xmlns="http://www.w3.org/2000/svg">
+                <path d="M161.096.001l-30.224 52.35L100.647.002H.003l130.877 226.687L261.76.001z" fill="#41b883"/>
+                <path d="M161.096.001l-30.224 52.35L100.647.002H52.346l78.526 136.01L209.398.001z" fill="#34495e"/>
+            </svg>
+        </a>
+    </div>
 </body>
 </html>
