@@ -2,7 +2,7 @@
 
 ## X API Post Service
 
-This Laravel application provides an API endpoint to retrieve recent posts from a specified X (formerly Twitter) account using the X API. It features a Blade view frontend for displaying posts and also serves as the backend for a [Vue.js](https://https://x-api-vue.alenhuric.com) application. The project is deployed on a Hostinger subdomain via SFTP with FileZilla.
+This Laravel application provides an API endpoint to retrieve recent posts from a specified X (formerly Twitter) account using the X API. It features a Blade view frontend for displaying posts and also serves as the backend for a [Vue.js](https://x-api-vue.alenhuric.com) application. The project is deployed on a Hostinger subdomain via SFTP with FileZilla.
 
 ## Features
 
