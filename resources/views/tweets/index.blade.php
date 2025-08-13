@@ -192,6 +192,59 @@
         .vue-btn-container:hover .tooltip {
             opacity: 1;
         }
+
+        .faq-section {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            color: #1d9bf0;
+            margin-bottom: 20px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .faq-question {
+            cursor: pointer;
+            padding: 15px;
+            font-weight: bold;
+            color: #14171a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .faq-question:hover {
+            background-color: #f7f9fa;
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 0 15px 15px 15px;
+            font-size: 14px;
+            color: #657786;
+            line-height: 1.5;
+        }
+
+        .faq-toggle {
+            font-size: 14px;
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .faq-question.active .faq-toggle {
+            transform: rotate(180deg); /* flips the arrow */
+        }
+
     </style>
 </head>
 <body>
@@ -229,6 +282,40 @@
         @endif
     </div>
 
+    <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>How often are tweets updated?</span>
+                <span class="faq-toggle">▾</span>
+            </div>
+            <div class="faq-answer">
+                Tweets are pulled whenever the page loads, reflecting the most recent data available. Note that the X API has a monthly post cap of 100 tweets, so only a limited number of tweets may appear.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Why does the page sometimes show an error?</span>
+                <span class="faq-toggle">▾</span>
+            </div>
+            <div class="faq-answer">
+                Errors may occur if the X API is temporarily unavailable, if your server cannot connect, or if the monthly post cap has been reached. Timeouts or network issues can also trigger an error message.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Is there a limit on how many tweets I can view in total?</span>
+                <span class="faq-toggle">▾</span>
+            </div>
+            <div class="faq-answer">
+                Yes, the X API enforces a monthly post cap of 100 tweets. This means only the most recent 100 tweets can be retrieved and displayed within a given month.
+            </div>
+        </div>
+    </div>
+
     <div class="footer">
         <p>Check out the source code on 
             <a href="https://github.com/alenhuric/twitter-api" target="_blank">
@@ -249,3 +336,17 @@
     </div>
 </body>
 </html>
+
+<script>
+    document.querySelectorAll('.faq-question').forEach(question => {
+        question.addEventListener('click', () => {
+            question.classList.toggle('active');
+            const answer = question.nextElementSibling;
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+            } else {
+                answer.style.display = 'block';
+            }
+        });
+    });
+</script>
